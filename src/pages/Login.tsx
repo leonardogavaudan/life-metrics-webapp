@@ -3,6 +3,7 @@ import { Card, CardDescription } from "@/components/ui/card";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -30,8 +31,20 @@ export function LoginPage() {
     handleLogin();
   }, [searchParams, login, navigate]);
 
-  const handleGoogleLogin = () => {
-    window.location.href = "https://your-backend-url/auth/google";
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.lifemetrics.io/auth/google"
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch Google auth URL");
+      }
+      const { url } = response.data;
+      window.location.href = url;
+    } catch (error) {
+      console.error("Error initiating Google login:", error);
+      setError("Failed to initiate Google login. Please try again.");
+    }
   };
 
   return (
