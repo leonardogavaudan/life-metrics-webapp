@@ -1,18 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription } from "@/components/ui/card";
-import axios from "axios";
+import { useAuth } from "../contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function LoginPage() {
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/oauth/google/");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [error, setError] = useState<string | null>(null);
 
-      if (response.data.url) {
-        window.location.href = response.data.url;
+  useEffect(() => {
+    const handleLogin = async () => {
+      const token = searchParams.get("token");
+      if (token) {
+        try {
+          const success = await login(token);
+          if (success) {
+            navigate("/dashboard");
+          } else {
+            setError("Invalid or expired token. Please try logging in again.");
+          }
+        } catch (err) {
+          setError("An error occurred during login. Please try again.");
+        }
       }
-    } catch (error) {
-      console.error("Error during Google OAuth:", error);
-    }
+    };
+
+    handleLogin();
+  }, [searchParams, login, navigate]);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "https://your-backend-url/auth/google";
   };
 
   return (
@@ -42,6 +61,7 @@ export function LoginPage() {
             <CardDescription className="text-lg">
               Sign in or create an account to continue
             </CardDescription>
+            {error && <p className="text-sm text-destructive mt-2">{error}</p>}
           </div>
 
           <div className="space-y-4">
@@ -72,7 +92,7 @@ export function LoginPage() {
                   fill="#EA4335"
                 />
               </svg>
-              <span>Continue with Google</span>
+              Continue with Google
             </Button>
           </div>
 
