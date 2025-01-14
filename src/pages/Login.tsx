@@ -12,7 +12,7 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleLogin = async () => {
+    const loginApp = async () => {
       const token = searchParams.get("token");
       if (token) {
         try {
@@ -28,13 +28,13 @@ export function LoginPage() {
       }
     };
 
-    handleLogin();
+    loginApp();
   }, [searchParams, login, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
       const response = await axios.get(
-        "https://api.lifemetrics.io/auth/google"
+        "https://api.lifemetrics.io/auth"
       );
       if (response.status !== 200) {
         throw new Error("Failed to fetch Google auth URL");
