@@ -5,32 +5,31 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import { api } from "../lib/axios";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
-  login: (token: string) => Promise<boolean>;
+  login: (code: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-async function isTokenValid(token: string): Promise<boolean> {
+async function exchangeGoogleCode(code: string): Promise<string | null> {
   try {
-    const parts = token.split(".");
-    if (parts.length !== 3) {
-      return false;
-    }
+    const response = await api.post("/auth/google/callback", { code });
+    return response.data.token;
+  } catch (error) {
+    console.error("Code exchange error:", error);
+    return null;
+  }
+}
 
-    const response = await fetch("https://your-backend-url/validate-token", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    return response.ok;
+async function isTokenValid(): Promise<boolean> {
+  try {
+    await api.get("/auth/validate");
+    return true;
   } catch {
     return false;
   }
@@ -43,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const validateStoredToken = async () => {
       const storedToken = localStorage.getItem("auth_token");
-      if (storedToken && (await isTokenValid(storedToken))) {
+      if (storedToken && (await isTokenValid())) {
         setToken(storedToken);
         setIsAuthenticated(true);
       } else {
@@ -56,14 +55,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     validateStoredToken();
   }, []);
 
-  const login = async (newToken: string): Promise<boolean> => {
-    if (await isTokenValid(newToken)) {
-      localStorage.setItem("auth_token", newToken);
-      setToken(newToken);
+  const login = async (googleCode: string): Promise<boolean> => {
+    try {
+      const jwt = await exchangeGoogleCode(googleCode);
+      if (!jwt || !(await isTokenValid())) {
+        console.error("Invalid or missing JWT");
+        logout();
+        return false;
+      }
+
+      localStorage.setItem("auth_token", jwt);
+      setToken(jwt);
       setIsAuthenticated(true);
       return true;
-    } else {
-      console.error("Invalid token provided");
+    } catch (error) {
+      console.error("Login error:", error);
       logout();
       return false;
     }

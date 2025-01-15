@@ -3,7 +3,7 @@ import { Card, CardDescription } from "@/components/ui/card";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import { api } from "../lib/axios";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -12,33 +12,28 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loginApp = async () => {
-      const token = searchParams.get("token");
-      if (token) {
+    async function loginApp() {
+      const code = searchParams.get("code");
+      if (code) {
         try {
-          const success = await login(token);
+          const success = await login(code);
           if (success) {
             navigate("/dashboard");
           } else {
-            setError("Invalid or expired token. Please try logging in again.");
+            setError("Authentication failed. Please try logging in again.");
           }
-        } catch (err) {
+        } catch {
           setError("An error occurred during login. Please try again.");
         }
       }
-    };
+    }
 
     loginApp();
   }, [searchParams, login, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
-      const response = await axios.get(
-        "https://api.lifemetrics.io/auth"
-      );
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch Google auth URL");
-      }
+      const response = await api.get("/auth/google");
       const { url } = response.data;
       window.location.href = url;
     } catch (error) {
