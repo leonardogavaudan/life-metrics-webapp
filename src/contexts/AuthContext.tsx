@@ -9,7 +9,6 @@ import { api } from "../lib/axios";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  token: string | null;
   login: (code: string) => Promise<boolean>;
   logout: () => void;
 }
@@ -37,36 +36,39 @@ async function isTokenValid(): Promise<boolean> {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+
+  const validateStoredToken = async () => {
+    const storedToken = localStorage.getItem("auth_token");
+    if (storedToken && (await isTokenValid())) {
+      setIsAuthenticated(true);
+      return true;
+    } else {
+      localStorage.removeItem("auth_token");
+      setIsAuthenticated(false);
+      return false;
+    }
+  };
 
   useEffect(() => {
-    const validateStoredToken = async () => {
-      const storedToken = localStorage.getItem("auth_token");
-      if (storedToken && (await isTokenValid())) {
-        setToken(storedToken);
-        setIsAuthenticated(true);
-      } else {
-        localStorage.removeItem("auth_token");
-        setToken(null);
-        setIsAuthenticated(false);
-      }
-    };
-
     validateStoredToken();
   }, []);
 
   const login = async (googleCode: string): Promise<boolean> => {
     try {
       const jwt = await exchangeGoogleCode(googleCode);
-      if (!jwt || !(await isTokenValid())) {
-        console.error("Invalid or missing JWT");
+      if (!jwt) {
+        console.error("Missing JWT");
         logout();
         return false;
       }
 
       localStorage.setItem("auth_token", jwt);
-      setToken(jwt);
-      setIsAuthenticated(true);
+
+      if (!(await validateStoredToken())) {
+        console.error("Invalid JWT");
+        return false;
+      }
+
       return true;
     } catch (error) {
       console.error("Login error:", error);
@@ -77,12 +79,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("auth_token");
-    setToken(null);
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
