@@ -6,7 +6,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../lib/axios";
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
@@ -15,24 +15,33 @@ export function LoginPage() {
     console.log("useEffect triggered");
     async function loginApp() {
       const code = searchParams.get("code");
-      if (code) {
-        console.log("Code received:", code);
+      console.log("Code received:", code);
+      if (code && !isAuthenticated) {
         try {
           const success = await login(code);
           console.log("Login success:", success);
           if (success) {
+            console.log("Navigating to /dashboard");
             navigate("/dashboard");
+            // Clear the code parameter from the URL
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete("code");
+            window.history.replaceState({}, document.title, newUrl);
           } else {
+            console.log("Login failed");
             setError("Authentication failed. Please try logging in again.");
           }
-        } catch {
+        } catch (error) {
+          console.error("Login error caught:", error);
           setError("An error occurred during login. Please try again.");
         }
+      } else {
+        console.log("No code received or already authenticated");
       }
     }
 
     loginApp();
-  }, [searchParams, login, navigate]);
+  }, [searchParams, login, navigate, isAuthenticated]);
 
   const handleGoogleLogin = async () => {
     console.log("Google login initiated");

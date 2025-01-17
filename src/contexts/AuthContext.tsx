@@ -6,6 +6,7 @@ import {
   useEffect,
 } from "react";
 import { api } from "../lib/axios";
+import axios from "axios"; // Import axios
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -19,9 +20,17 @@ async function exchangeGoogleCode(code: string): Promise<string | null> {
   console.log("exchangeGoogleCode called with code:", code);
   try {
     const response = await api.post("/auth/google/callback", { code });
+    console.log("Exchange response:", response.data);
     return response.data.token;
   } catch (error) {
-    console.error("Code exchange error:", error);
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Code exchange error:",
+        error.response ? error.response.data : error.message
+      );
+    } else {
+      console.error("Code exchange error:", error);
+    }
     return null;
   }
 }
@@ -73,7 +82,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return true;
     } catch (error) {
-      console.error("Login error:", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Login error:",
+          error.response ? error.response.data : error.message
+        );
+      } else {
+        console.error("Login error:", error);
+      }
       logout();
       return false;
     }
