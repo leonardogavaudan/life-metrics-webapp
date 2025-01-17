@@ -12,11 +12,14 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("useEffect triggered");
     async function loginApp() {
       const code = searchParams.get("code");
       if (code) {
+        console.log("Code received:", code);
         try {
           const success = await login(code);
+          console.log("Login success:", success);
           if (success) {
             navigate("/dashboard");
           } else {
@@ -32,9 +35,11 @@ export function LoginPage() {
   }, [searchParams, login, navigate]);
 
   const handleGoogleLogin = async () => {
+    console.log("Google login initiated");
     try {
       const response = await api.get("/auth/google");
       const { url } = response.data;
+      console.log("Redirect URL:", url);
       window.location.href = url;
     } catch (error) {
       console.error("Error initiating Google login:", error);

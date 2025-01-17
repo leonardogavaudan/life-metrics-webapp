@@ -16,6 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 async function exchangeGoogleCode(code: string): Promise<string | null> {
+  console.log("exchangeGoogleCode called with code:", code);
   try {
     const response = await api.post("/auth/google/callback", { code });
     return response.data.token;
@@ -26,6 +27,7 @@ async function exchangeGoogleCode(code: string): Promise<string | null> {
 }
 
 async function isTokenValid(): Promise<boolean> {
+  console.log("isTokenValid called");
   try {
     await api.get("/auth/validate");
     return true;
