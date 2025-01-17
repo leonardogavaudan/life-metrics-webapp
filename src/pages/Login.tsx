@@ -19,7 +19,6 @@ export function LoginPage() {
       }
       try {
         const success = await login(code);
-        console.log("Login success:", success);
         if (success) {
           navigate("/dashboard");
           const newUrl = new URL(window.location.href);

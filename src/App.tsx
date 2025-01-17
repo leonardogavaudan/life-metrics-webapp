@@ -24,28 +24,24 @@ const ProtectedLayout = () => {
   );
 };
 
+const ProtectedRoutes = () => {
+  return (
+    <ProtectedRoute>
+      <Outlet />
+    </ProtectedRoute>
+  );
+};
+
 const App = () => {
   return (
     <AuthProvider>
       <Routes>
         <Route element={<Root />}>
-          <Route element={<ProtectedLayout />}>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+          <Route element={<ProtectedRoutes />}>
+            <Route element={<ProtectedLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Route>
