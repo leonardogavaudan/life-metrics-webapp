@@ -12,6 +12,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (code: string) => Promise<boolean>;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -47,6 +48,7 @@ async function isTokenValid(): Promise<boolean> {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const validateStoredToken = async () => {
     const storedToken = localStorage.getItem("auth_token");
@@ -54,6 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (storedToken && (await isTokenValid())) {
       console.log("Token is valid, setting isAuthenticated to true");
       setIsAuthenticated(true);
+      setIsLoading(false);
       return true;
     } else {
       console.log(
@@ -61,6 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       localStorage.removeItem("auth_token");
       setIsAuthenticated(false);
+      setIsLoading(false);
       return false;
     }
   };
@@ -107,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
