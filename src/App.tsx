@@ -1,10 +1,12 @@
 import { Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/Login";
 import { Outlet } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 const Root = () => {
   return (
@@ -36,9 +38,18 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
   );
