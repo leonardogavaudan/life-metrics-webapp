@@ -50,10 +50,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const validateStoredToken = async () => {
     const storedToken = localStorage.getItem("auth_token");
+    console.log("Stored auth token is: ", storedToken);
     if (storedToken && (await isTokenValid())) {
+      console.log("Token is valid, setting isAuthenticated to true");
       setIsAuthenticated(true);
       return true;
     } else {
+      console.log(
+        "Token is invalid or not present, setting isAuthenticated to false"
+      );
       localStorage.removeItem("auth_token");
       setIsAuthenticated(false);
       return false;
@@ -61,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log("Validating stored token on initial render");
     validateStoredToken();
   }, []);
 
