@@ -12,43 +12,34 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("useEffect triggered");
-    async function loginApp() {
+    const loginApp = async () => {
       const code = searchParams.get("code");
-      console.log("Code received:", code);
-      if (code && !isAuthenticated) {
-        try {
-          const success = await login(code);
-          console.log("Login success:", success);
-          if (success) {
-            console.log("Navigating to /dashboard");
-            navigate("/dashboard");
-            // Clear the code parameter from the URL
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.delete("code");
-            window.history.replaceState({}, document.title, newUrl);
-          } else {
-            console.log("Login failed");
-            setError("Authentication failed. Please try logging in again.");
-          }
-        } catch (error) {
-          console.error("Login error caught:", error);
-          setError("An error occurred during login. Please try again.");
-        }
-      } else {
-        console.log("No code received or already authenticated");
+      if (isAuthenticated || !code) {
+        return;
       }
-    }
-
+      try {
+        const success = await login(code);
+        console.log("Login success:", success);
+        if (success) {
+          navigate("/dashboard");
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete("code");
+          window.history.replaceState({}, document.title, newUrl);
+        } else {
+          setError("Authentication failed. Please try logging in again.");
+        }
+      } catch (error) {
+        console.error("Login error caught:", error);
+        setError("An error occurred during login. Please try again.");
+      }
+    };
     loginApp();
   }, [searchParams, login, navigate, isAuthenticated]);
 
   const handleGoogleLogin = async () => {
-    console.log("Google login initiated");
     try {
       const response = await api.get("/auth/google");
       const { url } = response.data;
-      console.log("Redirect URL:", url);
       window.location.href = url;
     } catch (error) {
       console.error("Error initiating Google login:", error);
