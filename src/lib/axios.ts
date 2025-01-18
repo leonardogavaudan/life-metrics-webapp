@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://api.lifemetrics.io",
+  baseURL: import.meta.env.DEV ? "/api" : "https://api.lifemetrics.io",
   headers: {
     "Content-Type": "application/json",
+    "X-Environment": import.meta.env.DEV ? "development" : "production",
   },
 });
 
