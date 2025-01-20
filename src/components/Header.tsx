@@ -2,9 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/hooks/useUser";
+
 const Header = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { data: user } = useUser();
 
   const handleLogout = () => {
     logout();
@@ -44,8 +47,18 @@ const Header = () => {
 
           <div className="flex items-center space-x-4">
             <Avatar className="cursor-pointer">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage
+                src={user?.pictureUrl ?? undefined}
+                alt={user?.name}
+              />
+              <AvatarFallback>
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                  : user?.email?.[0].toUpperCase() ?? "U"}
+              </AvatarFallback>
             </Avatar>
 
             <Button variant="outline" onClick={handleLogout}>

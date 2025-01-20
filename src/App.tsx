@@ -10,6 +10,16 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import { Toaster } from "@/components/ui/toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 const Root = () => {
   return (
@@ -38,22 +48,24 @@ const ProtectedRoutes = () => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route element={<Root />}>
-          <Route element={<ProtectedRoutes />}>
-            <Route element={<ProtectedLayout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/integrations" element={<IntegrationsPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Routes>
+          <Route element={<Root />}>
+            <Route element={<ProtectedRoutes />}>
+              <Route element={<ProtectedLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/integrations" element={<IntegrationsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+              </Route>
             </Route>
+            <Route path="/login" element={<LoginPage />} />
           </Route>
-          <Route path="/login" element={<LoginPage />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AuthProvider>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 

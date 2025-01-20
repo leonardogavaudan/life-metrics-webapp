@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/hooks/useUser";
 
 const SettingsPage: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -20,10 +21,11 @@ const SettingsPage: React.FC = () => {
   const { toast } = useToast();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { data: user, isLoading, isError } = useUser();
 
   const handleDeleteAccount = async () => {
     try {
-      await api.delete("/account");
+      await api.delete("/users/me");
       setIsDeleteDialogOpen(false);
 
       toast({
@@ -37,10 +39,35 @@ const SettingsPage: React.FC = () => {
       }, 2000);
     } catch {
       setError(
-        "Failed to delete account. Please ensure you have no active subscriptions and try again. Contact support if the issue persists."
+        "Failed to delete account. Contact support if the issue persists."
       );
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <div className="space-y-6 max-w-2xl">
+          <div className="bg-slate-700 p-6 rounded-lg animate-pulse">
+            <div className="h-4 bg-slate-600 rounded w-1/4 mb-4"></div>
+            <div className="h-8 bg-slate-600 rounded w-3/4"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !user) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <div className="bg-red-500/10 text-red-500 p-4 rounded-lg">
+          Failed to load user data. Please try refreshing the page.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -51,10 +78,26 @@ const SettingsPage: React.FC = () => {
           <h2 className="text-lg font-semibold mb-4">Account</h2>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="google-account">Connected Google Account</Label>
+              <Label>Name</Label>
               <div className="mt-1.5">
                 <div className="text-sm text-muted-foreground bg-slate-800/50 rounded-md px-3 py-2">
-                  user@gmail.com
+                  {user.name}
+                </div>
+              </div>
+            </div>
+            <div>
+              <Label>Connected Google Account</Label>
+              <div className="mt-1.5">
+                <div className="text-sm text-muted-foreground bg-slate-800/50 rounded-md px-3 py-2">
+                  {user.email}
+                </div>
+              </div>
+            </div>
+            <div>
+              <Label>Member Since</Label>
+              <div className="mt-1.5">
+                <div className="text-sm text-muted-foreground bg-slate-800/50 rounded-md px-3 py-2">
+                  {user.createdAt.toLocaleDateString()}
                 </div>
               </div>
             </div>
