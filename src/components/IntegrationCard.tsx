@@ -1,23 +1,22 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
+import { IntegrationStatus } from "@/types/integration";
 
 type IntegrationCardProps = {
   title: string;
   description: string;
   icon: ReactNode;
-  buttonText: string;
-  status: "connected" | "disconnected";
-  onManage?: () => void;
+  status: IntegrationStatus;
+  onAction?: () => void;
 };
 
 export const IntegrationCard = ({
   title,
   description,
   icon,
-  buttonText,
   status,
-  onManage,
+  onAction,
 }: IntegrationCardProps) => {
   return (
     <div className="group relative bg-slate-900 p-6 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors">
@@ -27,20 +26,27 @@ export const IntegrationCard = ({
           <h3 className="text-lg font-semibold text-gray-50">{title}</h3>
           <p className="mt-1 text-gray-400 text-sm">{description}</p>
           <div className="mt-4">
-            <Button variant="outline" className="gap-2" onClick={onManage}>
-              {buttonText}
-            </Button>
+            {status !== IntegrationStatus.ComingSoon && (
+              <Button variant="outline" className="gap-2" onClick={onAction}>
+                {status === IntegrationStatus.Connected ? "Remove" : "Add"}
+              </Button>
+            )}
           </div>
         </div>
         <div
-          className={cn(
-            "px-3 py-1 text-sm font-medium rounded-full",
-            status === "connected"
-              ? "bg-emerald-900/30 text-emerald-400"
-              : "bg-rose-900/30 text-rose-400"
-          )}
+          className={cn("px-3 py-1 text-sm font-medium rounded-full", {
+            "bg-green-950 text-green-400":
+              status === IntegrationStatus.Connected,
+            "bg-blue-950 text-blue-400": status === IntegrationStatus.Available,
+            "bg-slate-800 text-slate-400":
+              status === IntegrationStatus.ComingSoon,
+          })}
         >
-          {status === "connected" ? "Connected" : "Disconnected"}
+          {status === IntegrationStatus.Connected
+            ? "Connected"
+            : status === IntegrationStatus.Available
+            ? "Available"
+            : "Coming Soon"}
         </div>
       </div>
     </div>
