@@ -1,27 +1,23 @@
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 import { api } from "../lib/axios";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
 
-export const SettingsPage = () => {
+const SettingsPage: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -29,26 +25,23 @@ export const SettingsPage = () => {
     try {
       await api.delete("/account");
       setIsDeleteDialogOpen(false);
-      logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Error deleting account:", error);
+
       toast({
-        variant: "destructive",
-        title: "Error deleting account",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
-        action: (
-          <ToastAction altText="Try again" onClick={handleDeleteAccount}>
-            Try again
-          </ToastAction>
-        ),
+        title: "Account Deleted",
+        description: "Your account has been permanently removed",
       });
-      setError("Failed to delete account. Please try again.");
+
+      setTimeout(() => {
+        logout();
+        navigate("/login");
+      }, 2000);
+    } catch {
+      setError(
+        "Failed to delete account. Please ensure you have no active subscriptions and try again. Contact support if the issue persists."
+      );
     }
   };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Settings</h1>
@@ -83,17 +76,9 @@ export const SettingsPage = () => {
 
             <AlertDialog
               open={isDeleteDialogOpen}
-              onOpenChange={(open) => {
-                if (!open) {
-                  setError(null);
-                }
-                // Only allow closing if there's no error
-                if (!error) {
-                  setIsDeleteDialogOpen(open);
-                }
-              }}
+              onOpenChange={setIsDeleteDialogOpen}
             >
-              <AlertDialogContent autoFocus={false}>
+              <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -104,14 +89,21 @@ export const SettingsPage = () => {
                     )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={handleDeleteAccount}
+                <AlertDialogFooter className="gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setError(null);
+                      setIsDeleteDialogOpen(false);
+                    }}
                   >
-                    Delete Account
-                  </AlertDialogAction>
+                    {error ? "Dismiss" : "Cancel"}
+                  </Button>
+                  {!error && (
+                    <Button variant="destructive" onClick={handleDeleteAccount}>
+                      Delete Account
+                    </Button>
+                  )}
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -121,3 +113,5 @@ export const SettingsPage = () => {
     </div>
   );
 };
+
+export default SettingsPage;

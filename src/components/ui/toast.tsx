@@ -101,5 +101,35 @@ const ToastAction = React.forwardRef<
 });
 ToastAction.displayName = "ToastAction";
 
+import { useToast } from "./use-toast";
+
+const Toaster = () => {
+  const { toasts } = useToast();
+
+  return (
+    <div className="toaster fixed bottom-4 left-4 z-[100] flex flex-col gap-2">
+      {toasts.map(({ id, title, description, action, ...props }) => (
+        <Toast key={id} {...props}>
+          <div className="grid gap-1">
+            {title && <ToastTitle>{title}</ToastTitle>}
+            {description && <ToastDescription>{description}</ToastDescription>}
+          </div>
+          {action && (
+            <ToastAction altText="Perform action">{action}</ToastAction>
+          )}
+          <ToastClose />
+        </Toast>
+      ))}
+    </div>
+  );
+};
+
 export type { ToastProps };
-export { Toast, ToastClose, ToastTitle, ToastDescription, ToastAction };
+export {
+  Toast,
+  ToastClose,
+  ToastTitle,
+  ToastDescription,
+  ToastAction,
+  Toaster,
+};

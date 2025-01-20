@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ToastProps, ToastAction } from "@/components/ui/toast";
 
-const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_LIMIT = 3;
+const TOAST_REMOVE_DELAY = 5000;
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -54,8 +54,10 @@ interface State {
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 const addToRemoveQueue = (toastId: string) => {
-  if (toastTimeouts.has(toastId)) {
-    return;
+  // Clear existing timeout if present
+  const existingTimeout = toastTimeouts.get(toastId);
+  if (existingTimeout) {
+    clearTimeout(existingTimeout);
   }
 
   const timeout = setTimeout(() => {
