@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { TermsOfService } from "./pages/TermsOfService";
 import { Toaster } from "@/components/ui/toast";
+import { OAuthCallback } from "./pages/OAuthCallback";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
@@ -60,6 +61,10 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/integrations" element={<IntegrationsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route
+                  path="/integrations/oauth/callback"
+                  element={<OAuthCallback />}
+                />
               </Route>
             </Route>
             <Route path="/login" element={<LoginPage />} />
