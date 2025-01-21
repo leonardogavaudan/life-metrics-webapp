@@ -9,6 +9,8 @@ import { Outlet } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
+import { TermsOfService } from "./pages/TermsOfService";
 import { Toaster } from "@/components/ui/toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -61,6 +63,8 @@ const App = () => {
               </Route>
             </Route>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

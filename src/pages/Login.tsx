@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription } from "@/components/ui/card";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../lib/axios";
 
 export function LoginPage() {
@@ -111,9 +111,19 @@ export function LoginPage() {
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
               By continuing, you agree to our{" "}
-              <a href="#" className="underline hover:text-primary">
+              <Link
+                to="/terms-of-service"
+                className="underline hover:text-primary"
+              >
                 Terms of Service
-              </a>
+              </Link>{" "}
+              and{" "}
+              <Link
+                to="/privacy-policy"
+                className="underline hover:text-primary"
+              >
+                Privacy Policy
+              </Link>
             </p>
           </div>
         </div>
