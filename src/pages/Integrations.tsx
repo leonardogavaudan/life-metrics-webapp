@@ -1,3 +1,4 @@
+import { api } from "@/lib/axios";
 import { OuraIcon } from "@/components/icons/OuraIcon";
 import { WhoopIcon } from "@/components/icons/WhoopIcon";
 import { FitbitIcon } from "@/components/icons/FitbitIcon";
@@ -75,15 +76,20 @@ export const IntegrationsPage = () => {
                 ) : null
               }
               status={integration.status}
-              onAction={() => {
-                // TODO: Implement add/remove integration
-                console.log(
-                  `${
-                    integration.status === IntegrationStatus.Connected
-                      ? "Remove"
-                      : "Add"
-                  } ${integration.name}`
-                );
+              onAction={async () => {
+                if (integration.status === IntegrationStatus.Connected) {
+                  console.log(`Remove ${integration.name}`);
+                  return;
+                }
+
+                try {
+                  const response = await api.get(
+                    `/integrations/oauth/authorize/${integration.provider}`
+                  );
+                  window.location.href = response.data.url;
+                } catch (error) {
+                  console.error("Failed to get authorization URL:", error);
+                }
               }}
             />
           ))}
