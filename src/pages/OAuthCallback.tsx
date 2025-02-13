@@ -23,8 +23,10 @@ export const OAuthCallback = () => {
         return;
       }
 
+      const state = searchParams.get("state");
+
       try {
-        await api.post("/oauth/callback", { code });
+        await api.post("/integrations/oauth/callback", { code, state });
         toast({
           title: "Success",
           description: "Integration connected successfully",
