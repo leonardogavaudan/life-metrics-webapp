@@ -21,7 +21,6 @@ async function exchangeGoogleCode(code: string): Promise<string | null> {
   console.log("exchangeGoogleCode called with code:", code);
   try {
     const response = await api.post("/auth/google/callback", { code });
-    console.log("Exchange response:", response.data);
     return response.data.token;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -37,7 +36,6 @@ async function exchangeGoogleCode(code: string): Promise<string | null> {
 }
 
 async function isTokenValid(): Promise<boolean> {
-  console.log("isTokenValid called");
   try {
     await api.get("/auth/validate");
     return true;
@@ -52,9 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const validateStoredToken = async () => {
     const storedToken = localStorage.getItem("auth_token");
-    console.log("Stored auth token is: ", storedToken);
     if (storedToken && (await isTokenValid())) {
-      console.log("Token is valid, setting isAuthenticated to true");
       setIsAuthenticated(true);
       setIsLoading(false);
       return true;
@@ -70,7 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log("Validating stored token on initial render");
     validateStoredToken();
   }, []);
 
