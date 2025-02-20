@@ -78,7 +78,11 @@ export const IntegrationsPage = () => {
               status={integration.status}
               onAction={async () => {
                 if (integration.status === IntegrationStatus.Connected) {
-                  console.log(`Remove ${integration.name}`);
+                  try {
+                    await api.delete(`/integrations/${integration.id}`);
+                  } catch (error) {
+                    console.error("Failed to disconnect integration:", error);
+                  }
                   return;
                 }
 
