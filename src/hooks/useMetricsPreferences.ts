@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/axios";
-import type { MetricsPreferencesResponse } from "@/types/metrics";
+// import { api } from "@/lib/axios";
+// import type { MetricsPreferencesResponse } from "@/types/metrics";
 
 export const useMetricsPreferences = () => {
   return useQuery({
