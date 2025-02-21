@@ -8,42 +8,37 @@ export const useMetricsPreferences = () => {
     queryFn: async () => {
       const dummyData = [
         {
-          id: "1",
-          name: "Sleep Duration",
+          name: "sleep_duration",
+          displayName: "Sleep Duration",
           category: "Sleep",
-          selectedProviderId: "oura-123",
+          selectedProvider: "Oura",
           supportedProviders: [
             {
               provider: "Oura",
-              providerId: "oura-123",
               isIntegrated: true,
             },
             {
               provider: "Fitbit",
-              providerId: "fitbit",
               isIntegrated: false,
             },
           ],
         },
         {
-          id: "2",
-          name: "Sleep Quality",
+          name: "sleep_quality",
+          displayName: "Sleep Quality",
           category: "Sleep",
-          selectedProviderId: "fitbit",
+          selectedProvider: "Fitbit",
           supportedProviders: [
             {
               provider: "Oura",
-              providerId: "oura-123",
               isIntegrated: true,
             },
             {
               provider: "Fitbit",
-              providerId: "fitbit",
               isIntegrated: true,
             },
             {
               provider: "Apple Health",
-              providerId: "apple_health",
               isIntegrated: false,
             },
           ],

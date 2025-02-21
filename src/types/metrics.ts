@@ -1,27 +1,18 @@
-export type Category = 'Sleep' | 'Activity' | 'General';
+export type Category = 'Sleep' | 'Activity' | 'Other';
 
-export const CATEGORIES: Category[] = ['Sleep', 'Activity', 'General'];
+export const CATEGORIES: Category[] = ['Sleep', 'Activity', 'Other'];
 
-type BaseProvider = {
+export type Provider = {
   provider: string;
+  isIntegrated: boolean;
 };
-
-type IntegratedProvider = BaseProvider & {
-  isIntegrated: true;
-  providerId: string;
-};
-
-type UnintegratedProvider = BaseProvider & {
-  isIntegrated: false;
-};
-
-export type SupportedProvider = IntegratedProvider | UnintegratedProvider;
 
 export type Metric = {
   name: string;
+  displayName: string;
   category: Category;
-  supportedProviders: SupportedProvider[];
-  selectedProviderId?: string;
+  supportedProviders: Provider[];
+  selectedProvider?: string;
 };
 
 export type MetricsPreferencesResponse = {

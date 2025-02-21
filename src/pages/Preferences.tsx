@@ -8,8 +8,11 @@ export const PreferencesPage = () => {
 
   if (isLoading || !metrics) {
     return (
-      <div className="container max-w-2xl mx-auto py-6">
-        <h1 className="text-xl font-bold mb-6 text-gray-200">Preferences</h1>
+      <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-50">Preferences</h1>
+          <p className="mt-2 text-gray-400">Customize how you track and visualize your metrics</p>
+        </header>
         <p>Loading...</p>
       </div>
     );
@@ -20,32 +23,38 @@ export const PreferencesPage = () => {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto py-6">
-      <h1 className="text-xl font-bold mb-6 text-gray-200">Preferences</h1>
-      <Tabs defaultValue={CATEGORIES[0].toLowerCase()} className="w-full">
-        <TabsList className="mb-4 w-full">
-          {CATEGORIES.map((category) => (
-            <TabsTrigger
-              key={category}
-              value={category.toLowerCase()}
-              className="flex-1"
-            >
-              {category}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+    <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div className="space-y-8">
+        <header>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-50">Preferences</h1>
+          <p className="mt-2 text-gray-400">Customize how you track and visualize your metrics</p>
+        </header>
 
-        {CATEGORIES.map((category) => (
-          <TabsContent key={category} value={category.toLowerCase()}>
-            <div className="bg-gray-800 rounded-lg border border-gray-700 shadow-sm">
-              {getMetricsByCategory(category).map((metric) => (
-                // @ts-ignore
-                <MetricCard key={metric.id} metric={metric} />
-              ))}
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs>
+        <Tabs defaultValue={CATEGORIES[0].toLowerCase()} className="w-full">
+          <TabsList className="mb-4 w-full">
+            {CATEGORIES.map((category) => (
+              <TabsTrigger
+                key={category}
+                value={category.toLowerCase()}
+                className="flex-1"
+              >
+                {category}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {CATEGORIES.map((category) => (
+            <TabsContent key={category} value={category.toLowerCase()}>
+              <div className="bg-gray-800 rounded-lg border border-gray-700 shadow-sm">
+                {getMetricsByCategory(category).map((metric) => (
+                  // @ts-ignore
+                  <MetricCard key={metric.id} metric={metric} />
+                ))}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 };

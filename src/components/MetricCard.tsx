@@ -18,9 +18,9 @@ export const MetricCard = ({ metric }: MetricCardProps) => {
 
   return (
     <div className="flex items-center justify-between py-1.5 px-4 border-b border-gray-700 last:border-b-0">
-      <div className="text-gray-200">{metric.name}</div>
+      <div className="text-gray-200">{metric.displayName}</div>
       <Select
-        value={metric.selectedProviderId}
+        value={metric.selectedProvider}
         disabled={integratedProviders.length === 0}
       >
         <SelectTrigger className="w-[180px] !border !border-gray-700 dark:!border-gray-700 focus:!border-gray-500">
@@ -30,9 +30,7 @@ export const MetricCard = ({ metric }: MetricCardProps) => {
           {metric.supportedProviders.map((provider) => (
             <SelectItem
               key={provider.provider}
-              value={
-                provider.isIntegrated ? provider.providerId : provider.provider
-              }
+              value={provider.provider}
               disabled={!provider.isIntegrated}
             >
               {provider.provider}

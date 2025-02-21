@@ -15,7 +15,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-slate-800 shadow py-4">
+    <header className="bg-slate-800 shadow py-3">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">

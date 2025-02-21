@@ -46,9 +46,9 @@ const SettingsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Settings</h1>
-        <div className="space-y-6 max-w-2xl">
+      <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold mb-6 text-gray-50">Settings</h1>
+        <div className="space-y-6">
           <div className="bg-slate-700 p-6 rounded-lg animate-pulse">
             <div className="h-4 bg-slate-600 rounded w-1/4 mb-4"></div>
             <div className="h-8 bg-slate-600 rounded w-3/4"></div>
@@ -60,8 +60,8 @@ const SettingsPage: React.FC = () => {
 
   if (isError || !user) {
     return (
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+      <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold mb-6 text-gray-50">Settings</h1>
         <div className="bg-red-500/10 text-red-500 p-4 rounded-lg">
           Failed to load user data. Please try refreshing the page.
         </div>
@@ -70,12 +70,12 @@ const SettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+    <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold mb-6 text-gray-50">Settings</h1>
 
-      <div className="space-y-6 max-w-2xl">
-        <div className="bg-slate-700 p-6 rounded-lg">
-          <h2 className="text-lg font-semibold mb-4">Account</h2>
+      <div className="space-y-6">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <h2 className="text-xl font-semibold mb-4">Account</h2>
           <div className="space-y-4">
             <div>
               <Label>Name</Label>
@@ -104,8 +104,8 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-700 p-6 rounded-lg">
-          <h2 className="text-lg font-semibold mb-4">Data & Privacy</h2>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <h2 className="text-xl font-semibold mb-4">Data & Privacy</h2>
           <div className="space-y-4">
             <div className="flex justify-start">
               <Button
