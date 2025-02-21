@@ -1,5 +1,7 @@
 export type Category = 'Sleep' | 'Activity' | 'General';
 
+export const CATEGORIES: Category[] = ['Sleep', 'Activity', 'General'];
+
 type BaseProvider = {
   provider: string;
 };
