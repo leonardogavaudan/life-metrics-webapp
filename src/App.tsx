@@ -14,6 +14,7 @@ import { TermsOfService } from "./pages/TermsOfService";
 import { Toaster } from "@/components/ui/toast";
 import { OAuthCallback } from "./pages/OAuthCallback";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PreferencesPage } from "./pages/Preferences";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ const App = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/integrations" element={<IntegrationsPage />} />
+                <Route path="/preferences" element={<PreferencesPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="/integrations/oauth/callback"

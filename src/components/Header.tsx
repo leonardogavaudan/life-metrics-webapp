@@ -37,6 +37,12 @@ const Header = () => {
                 Integrations
               </Link>
               <Link
+                to="/preferences"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                Preferences
+              </Link>
+              <Link
                 to="/settings"
                 className="text-gray-300 hover:text-white transition-colors"
               >
