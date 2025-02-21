@@ -6,11 +6,12 @@ import { AppleHealthIcon } from "@/components/icons/AppleHealthIcon";
 import { GarminIcon } from "@/components/icons/GarminIcon";
 import { CorosIcon } from "@/components/icons/CorosIcon";
 import { IntegrationCard } from "@/components/IntegrationCard";
-import { useIntegrations } from "@/hooks/useIntegrations";
+import { useIntegrations, useDeleteIntegration } from "@/hooks/useIntegrations";
 import { Integration, IntegrationStatus } from "@/types/integration";
 
 export const IntegrationsPage = () => {
   const { data: integrations, isLoading, error } = useIntegrations();
+  const deleteIntegration = useDeleteIntegration();
 
   if (isLoading) {
     return (
@@ -33,12 +34,12 @@ export const IntegrationsPage = () => {
     );
   }
 
+  const statusOrder = {
+    [IntegrationStatus.Connected]: 0,
+    [IntegrationStatus.Available]: 1,
+    [IntegrationStatus.ComingSoon]: 2,
+  };
   const sortedIntegrations = integrations?.sort((a, b) => {
-    const statusOrder = {
-      [IntegrationStatus.Connected]: 0,
-      [IntegrationStatus.Available]: 1,
-      [IntegrationStatus.ComingSoon]: 2,
-    };
     return statusOrder[a.status] - statusOrder[b.status];
   });
 
@@ -79,7 +80,7 @@ export const IntegrationsPage = () => {
               onAction={async () => {
                 if (integration.status === IntegrationStatus.Connected) {
                   try {
-                    await api.delete(`/integrations/${integration.id}`);
+                    await deleteIntegration.mutateAsync(integration.id);
                   } catch (error) {
                     console.error("Failed to disconnect integration:", error);
                   }

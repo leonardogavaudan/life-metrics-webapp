@@ -4,13 +4,31 @@ export enum IntegrationStatus {
   ComingSoon = "coming_soon",
 }
 
-export interface Integration {
-  id: string | null;
+interface BaseIntegration {
   provider: string;
   name: string;
   description: string;
-  status: IntegrationStatus;
 }
+
+interface ConnectedIntegration extends BaseIntegration {
+  status: IntegrationStatus.Connected;
+  id: string;
+}
+
+interface AvailableIntegration extends BaseIntegration {
+  status: IntegrationStatus.Available;
+  id: null;
+}
+
+interface ComingSoonIntegration extends BaseIntegration {
+  status: IntegrationStatus.ComingSoon;
+  id: null;
+}
+
+export type Integration =
+  | ConnectedIntegration
+  | AvailableIntegration
+  | ComingSoonIntegration;
 
 export interface IntegrationsResponse {
   integrations: Integration[];
