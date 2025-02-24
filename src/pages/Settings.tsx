@@ -15,7 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useUser } from "@/hooks/useUser";
 
-const SettingsPage: React.FC = () => {
+export const SettingsPage: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -156,5 +156,3 @@ const SettingsPage: React.FC = () => {
     </div>
   );
 };
-
-export default SettingsPage;

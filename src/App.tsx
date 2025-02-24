@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import { Dashboard } from "./pages/Dashboard";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/Login";
 import { IntegrationsPage } from "./pages/Integrations";
-import SettingsPage from "./pages/Settings";
+import { SettingsPage } from "./pages/Settings";
 import { Outlet } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import NotFound from "./pages/NotFound";
+import { NotFound } from "./pages/NotFound";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { TermsOfService } from "./pages/TermsOfService";
 import { Toaster } from "@/components/ui/toast";
