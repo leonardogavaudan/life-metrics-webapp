@@ -1,17 +1,28 @@
-export type Category = 'Sleep' | 'Activity' | 'Other';
+import { Provider } from "./integration";
 
-export const CATEGORIES: Category[] = ['Sleep', 'Activity', 'Other'];
+export const Categories = {
+  Sleep: "sleep",
+  Activity: "activity",
+  Other: "other",
+} as const;
+export type Category = (typeof Categories)[keyof typeof Categories];
 
-export type Provider = {
-  provider: string;
+export const CategoriesToDisplayNames = {
+  sleep: "Sleep",
+  activity: "Activity",
+  other: "Other",
+} as const;
+
+export type SupportedProvider = {
+  provider: Provider;
   isIntegrated: boolean;
 };
 
 export type Metric = {
-  name: string;
+  type: string;
   displayName: string;
   category: Category;
-  supportedProviders: Provider[];
+  supportedProviders: SupportedProvider[];
   selectedProvider?: string;
 };
 
