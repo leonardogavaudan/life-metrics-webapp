@@ -148,7 +148,18 @@ function toast({ ...props }: Toast) {
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
+  
+  const dismiss = () => {
+    // Clear any existing timeout
+    const existingTimeout = toastTimeouts.get(id);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+      toastTimeouts.delete(id);
+    }
+    
+    // Immediately remove the toast
+    dispatch({ type: "REMOVE_TOAST", toastId: id });
+  };
 
   dispatch({
     type: "ADD_TOAST",
@@ -185,7 +196,29 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId?: string) => {
+      if (toastId) {
+        // Clear any existing timeout
+        const existingTimeout = toastTimeouts.get(toastId);
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          toastTimeouts.delete(toastId);
+        }
+        
+        // Immediately remove the toast
+        dispatch({ type: "REMOVE_TOAST", toastId });
+      } else {
+        // Dismiss all toasts
+        state.toasts.forEach((toast) => {
+          const existingTimeout = toastTimeouts.get(toast.id);
+          if (existingTimeout) {
+            clearTimeout(existingTimeout);
+            toastTimeouts.delete(toast.id);
+          }
+          dispatch({ type: "REMOVE_TOAST", toastId: toast.id });
+        });
+      }
+    },
   };
 }
 

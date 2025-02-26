@@ -104,7 +104,7 @@ ToastAction.displayName = "ToastAction";
 import { useToast } from "./use-toast";
 
 const Toaster = () => {
-  const { toasts } = useToast();
+  const { toasts, dismiss } = useToast();
 
   return (
     <div className="toaster fixed bottom-4 left-4 z-[100] flex flex-col gap-2">
@@ -117,7 +117,7 @@ const Toaster = () => {
           {action && (
             <ToastAction altText="Perform action">{action}</ToastAction>
           )}
-          <ToastClose />
+          <ToastClose onClick={() => dismiss(id)} />
         </Toast>
       ))}
     </div>
