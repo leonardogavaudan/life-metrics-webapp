@@ -2,11 +2,13 @@ import { TrendingDown, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import {
   CartesianGrid,
-  LabelList,
   Line,
   LineChart,
   ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
   XAxis,
+  YAxis,
 } from "recharts";
 
 import {
@@ -17,12 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useMetricData } from "@/hooks/useMetricData";
 import {
   DashboardMetricResponse,
@@ -55,6 +52,30 @@ type MetricChartProps = {
 };
 
 const MetricChart = ({ data, formatDate }: MetricChartProps) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: TooltipProps<number, string>) => {
+    if (active && payload && payload.length) {
+      const date = new Date(label);
+      const formattedDate = format(date, "yyyy-MM-dd");
+      const score = payload[0].value;
+
+      return (
+        <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
+          <p className="font-medium">{formattedDate}</p>
+          <p className="text-sm">
+            <span className="text-muted-foreground">Score: </span>
+            <span className="font-mono font-medium">{score}</span>
+          </p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer width="100%">
@@ -67,7 +88,22 @@ const MetricChart = ({ data, formatDate }: MetricChartProps) => {
             bottom: 2,
           }}
         >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <CartesianGrid
+            vertical={false}
+            strokeDasharray="3 3"
+            horizontal={true}
+            horizontalCoordinatesGenerator={(props) => {
+              // Force specific y-coordinates for grid lines
+              const { height } = props.yAxis;
+              const domain = [0, 100];
+              const values = [0, 20, 40, 60, 80, 100];
+
+              return values.map((value) => {
+                const ratio = (value - domain[0]) / (domain[1] - domain[0]);
+                return height * (1 - ratio);
+              });
+            }}
+          />
           <XAxis
             dataKey="timestamp"
             tickLine={false}
@@ -76,13 +112,19 @@ const MetricChart = ({ data, formatDate }: MetricChartProps) => {
             tickFormatter={formatDate}
             fontSize={9}
           />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            fontSize={9}
+            domain={[0, 100]}
+            ticks={[0, 20, 40, 60, 80, 100]}
+            tickCount={6}
           />
+          <Tooltip content={<CustomTooltip />} />
           <Line
             dataKey="value"
-            type="natural"
+            type="monotone"
             stroke="var(--color-sleepScore)"
             strokeWidth={1.5}
             dot={{
@@ -92,14 +134,7 @@ const MetricChart = ({ data, formatDate }: MetricChartProps) => {
             activeDot={{
               r: 3,
             }}
-          >
-            <LabelList
-              position="top"
-              offset={4}
-              className="fill-foreground"
-              fontSize={8}
-            />
-          </Line>
+          />
         </LineChart>
       </ResponsiveContainer>
     </ChartContainer>

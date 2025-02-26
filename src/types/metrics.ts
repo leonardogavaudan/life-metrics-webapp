@@ -36,7 +36,7 @@ export type MetricsPreferencesResponse = {
 };
 
 export const TimeRange = {
-  Week: "week",
+  Week: "1_week",
   FourWeek: "4_week",
   ThreeMonth: "3_month",
   OneYear: "1_year",
