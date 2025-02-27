@@ -5,7 +5,7 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { api } from "../lib/axios";
+import { api } from "@/lib/axios";
 import axios from "axios"; // Import axios
 
 interface AuthContextType {

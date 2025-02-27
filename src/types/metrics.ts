@@ -1,4 +1,4 @@
-import { Provider } from "./integration";
+import { Provider } from "@/types/integration";
 
 export const Categories = {
   Sleep: "sleep",

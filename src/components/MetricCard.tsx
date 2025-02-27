@@ -8,7 +8,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Metric } from "@/types/metrics";
 import { api } from "@/lib/axios";
-import { ProvidersToDisplayNames } from "../types/integration";
+import { ProvidersToDisplayNames } from "@/types/integration";
 
 interface MetricCardProps {
   metric: Metric;

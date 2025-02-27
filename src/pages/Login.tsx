@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription } from "@/components/ui/card";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api } from "../lib/axios";
+import { api } from "@/lib/axios";
 
 export function LoginPage() {
   const { login, isAuthenticated } = useAuth();

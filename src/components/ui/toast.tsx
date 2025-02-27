@@ -101,7 +101,7 @@ const ToastAction = React.forwardRef<
 });
 ToastAction.displayName = "ToastAction";
 
-import { useToast } from "./use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 const Toaster = () => {
   const { toasts, dismiss } = useToast();
