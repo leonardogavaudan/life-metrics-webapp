@@ -1,30 +1,48 @@
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { MetricDataPoint } from "@/types/metrics";
+import {
+  GridCoordinateProps,
+  HorizontalCoordinatesGenerator,
+  metricConfigs,
+} from "@/pages/Dashboard/components/metricConfigs";
+import { MetricDataPoint, MetricType } from "@/types/metrics";
 import { format } from "date-fns/format";
 import {
-  TooltipProps,
-  ResponsiveContainer,
   CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
   Line,
   LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
 } from "recharts";
 
+// Chart configuration for different metric types
 const chartConfig = {
   sleepScore: {
     label: "Sleep Score",
     color: "hsl(var(--chart-1))",
+  },
+  steps: {
+    label: "Steps",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
 type MetricChartProps = {
   data: MetricDataPoint[];
   formatDate: (timestamp: string) => string;
+  metricType: MetricType;
 };
 
-export const MetricChart = ({ data, formatDate }: MetricChartProps) => {
+export const MetricChart = ({
+  data,
+  formatDate,
+  metricType,
+}: MetricChartProps) => {
+  // Get the configuration for the current metric type
+  const config = metricConfigs[metricType];
+
   const CustomTooltip = ({
     active,
     payload,
@@ -33,14 +51,14 @@ export const MetricChart = ({ data, formatDate }: MetricChartProps) => {
     if (active && payload && payload.length) {
       const date = new Date(label);
       const formattedDate = format(date, "yyyy-MM-dd");
-      const score = payload[0].value;
+      const value = payload[0].value;
 
       return (
         <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
           <p className="font-medium">{formattedDate}</p>
           <p className="text-sm">
-            <span className="text-muted-foreground">Score: </span>
-            <span className="font-mono font-medium">{score}</span>
+            <span className="text-muted-foreground">{config.valueLabel}: </span>
+            <span className="font-mono font-medium">{value}</span>
           </p>
         </div>
       );
@@ -48,6 +66,20 @@ export const MetricChart = ({ data, formatDate }: MetricChartProps) => {
 
     return null;
   };
+
+  // Create a grid coordinates generator if needed
+  const gridCoordinatesGenerator: HorizontalCoordinatesGenerator | undefined =
+    config.gridConfig
+      ? (props: GridCoordinateProps) => {
+          const { height } = props.yAxis;
+          const { domain, values } = config.gridConfig!;
+
+          return values.map((value: number) => {
+            const ratio = (value - domain[0]) / (domain[1] - domain[0]);
+            return height * (1 - ratio);
+          });
+        }
+      : undefined;
 
   return (
     <ChartContainer config={chartConfig}>
@@ -65,17 +97,7 @@ export const MetricChart = ({ data, formatDate }: MetricChartProps) => {
             vertical={false}
             strokeDasharray="3 3"
             horizontal={true}
-            horizontalCoordinatesGenerator={(props) => {
-              // Force specific y-coordinates for grid lines
-              const { height } = props.yAxis;
-              const domain = [0, 100];
-              const values = [0, 20, 40, 60, 80, 100];
-
-              return values.map((value) => {
-                const ratio = (value - domain[0]) / (domain[1] - domain[0]);
-                return height * (1 - ratio);
-              });
-            }}
+            horizontalCoordinatesGenerator={gridCoordinatesGenerator}
           />
           <XAxis
             dataKey="timestamp"
@@ -90,18 +112,18 @@ export const MetricChart = ({ data, formatDate }: MetricChartProps) => {
             axisLine={false}
             tickMargin={8}
             fontSize={9}
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
-            tickCount={6}
+            domain={config.yAxisConfig.domain}
+            ticks={config.yAxisConfig.ticks}
+            tickCount={config.yAxisConfig.tickCount}
           />
           <Tooltip content={<CustomTooltip />} />
           <Line
             dataKey="value"
             type="monotone"
-            stroke="var(--color-sleepScore)"
+            stroke={config.colorVar}
             strokeWidth={1.5}
             dot={{
-              fill: "var(--color-sleepScore)",
+              fill: config.colorVar,
               r: 2,
             }}
             activeDot={{
