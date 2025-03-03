@@ -19,7 +19,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/dashboard" className="flex items-center space-x-2">
               <span className="font-bold text-xl text-white">LIFE METRICS</span>
             </Link>
 
