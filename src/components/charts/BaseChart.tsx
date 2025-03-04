@@ -1,7 +1,7 @@
-import { MetricData } from "@/types/metrics";
+import { MetricDataPoint } from "@/types/metrics";
 
 interface BaseChartProps {
-  data: MetricData[];
+  data: MetricDataPoint[];
   title: string;
   height?: number;
   width?: number;
@@ -9,7 +9,6 @@ interface BaseChartProps {
 }
 
 export function BaseChart({
-  data,
   title,
   height = 300,
   width = 500,
