@@ -17,12 +17,6 @@ import {
   YAxis,
 } from "recharts";
 
-// Map from MetricType to chartConfig key
-const metricTypeToChartKey = {
-  [MetricType.DailySleepScore]: "sleepScore",
-  [MetricType.DailySteps]: "steps",
-  [MetricType.DailyTotalCalories]: "calories",
-};
 
 // Chart configuration for different metric types
 const chartConfig = {
