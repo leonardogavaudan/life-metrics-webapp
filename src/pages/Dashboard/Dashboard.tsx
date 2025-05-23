@@ -35,6 +35,12 @@ export const Dashboard = () => {
           timeRange={timeRange}
           formatDate={dateFormatter}
         />
+        <MetricCard
+          metricType={MetricType.DailyTotalCalories}
+          title="Daily Calories"
+          timeRange={timeRange}
+          formatDate={dateFormatter}
+        />
       </div>
     </div>
   );

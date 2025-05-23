@@ -29,6 +29,7 @@ export type Metric = {
 export const MetricType = {
   DailySleepScore: "daily_sleep_score",
   DailySteps: "daily_steps",
+  DailyTotalCalories: "daily_total_calories",
 } as const;
 export type MetricType = (typeof MetricType)[keyof typeof MetricType];
 

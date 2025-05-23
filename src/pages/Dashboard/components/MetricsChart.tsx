@@ -17,6 +17,13 @@ import {
   YAxis,
 } from "recharts";
 
+// Map from MetricType to chartConfig key
+const metricTypeToChartKey = {
+  [MetricType.DailySleepScore]: "sleepScore",
+  [MetricType.DailySteps]: "steps",
+  [MetricType.DailyTotalCalories]: "calories",
+};
+
 // Chart configuration for different metric types
 const chartConfig = {
   sleepScore: {
@@ -26,6 +33,10 @@ const chartConfig = {
   steps: {
     label: "Steps",
     color: "hsl(var(--chart-2))",
+  },
+  calories: {
+    label: "Calories",
+    color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
 
@@ -80,6 +91,9 @@ export const MetricChart = ({
           });
         }
       : undefined;
+
+  // Get the chart key for the current metric type
+  const chartKey = metricTypeToChartKey[metricType];
 
   return (
     <ChartContainer config={chartConfig}>

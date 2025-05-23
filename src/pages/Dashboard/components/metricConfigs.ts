@@ -52,4 +52,14 @@ export const metricConfigs: Record<MetricType, MetricConfig> = {
     },
     gridConfig: undefined,
   },
+  [MetricType.DailyTotalCalories]: {
+    valueLabel: "Calories",
+    colorVar: "var(--color-calories)",
+    yAxisConfig: {
+      domain: undefined,
+      ticks: undefined,
+      tickCount: 5,
+    },
+    gridConfig: undefined,
+  },
 };
