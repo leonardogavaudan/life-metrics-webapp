@@ -92,9 +92,6 @@ export const MetricChart = ({
         }
       : undefined;
 
-  // Get the chart key for the current metric type
-  const chartKey = metricTypeToChartKey[metricType];
-
   return (
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer width="100%">
