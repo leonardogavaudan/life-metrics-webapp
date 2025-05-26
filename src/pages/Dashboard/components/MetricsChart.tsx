@@ -18,7 +18,6 @@ import {
   YAxis,
 } from "recharts";
 
-
 // Chart configuration for different metric types
 const chartConfig = {
   sleepScore: {
@@ -64,9 +63,10 @@ export const MetricChart = ({
       const value = payload[0].value;
 
       // Format the value based on the metric type
-      const displayValue = metricType === MetricType.DailyTotalSleep 
-        ? formatSecondsToHoursMinutes(value) 
-        : value;
+      const displayValue =
+        metricType === MetricType.DailyTotalSleep && typeof value === "number"
+          ? formatSecondsToHoursMinutes(value)
+          : value;
 
       return (
         <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
@@ -130,9 +130,14 @@ export const MetricChart = ({
             domain={config.yAxisConfig.domain}
             ticks={config.yAxisConfig.ticks}
             tickCount={config.yAxisConfig.tickCount}
-            tickFormatter={metricType === MetricType.DailyTotalSleep 
-              ? (value) => formatSecondsToHoursMinutes(value) 
-              : undefined}
+            tickFormatter={
+              metricType === MetricType.DailyTotalSleep
+                ? (value) =>
+                    typeof value === "number"
+                      ? formatSecondsToHoursMinutes(value)
+                      : ""
+                : undefined
+            }
           />
           <Tooltip content={<CustomTooltip />} />
           <Line
