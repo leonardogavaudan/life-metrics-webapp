@@ -53,7 +53,7 @@ export const MetricCard = ({
           />
         ) : null}
       </CardContent>
-      {metricData && <MetricSummary metricData={metricData} />}
+      {metricData && <MetricSummary metricData={metricData} metricType={metricType} />}
     </Card>
   );
 };

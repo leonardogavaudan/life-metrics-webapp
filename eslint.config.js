@@ -7,7 +7,7 @@ import tseslint from "typescript-eslint";
 import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", ".vite"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -37,5 +37,5 @@ export default tseslint.config(
         },
       ],
     },
-  },
+  }
 );

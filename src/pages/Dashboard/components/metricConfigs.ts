@@ -62,4 +62,14 @@ export const metricConfigs: Record<MetricType, MetricConfig> = {
     },
     gridConfig: undefined,
   },
+  [MetricType.DailyTotalSleep]: {
+    valueLabel: "Duration",
+    colorVar: "var(--color-sleep)",
+    yAxisConfig: {
+      domain: undefined,
+      ticks: undefined,
+      tickCount: 5,
+    },
+    gridConfig: undefined,
+  },
 };

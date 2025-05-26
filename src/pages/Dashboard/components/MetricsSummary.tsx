@@ -1,12 +1,14 @@
 import { CardFooter } from "@/components/ui/card";
-import { DashboardMetricResponse } from "@/types/metrics";
+import { formatSecondsToHoursMinutes } from "@/pages/Dashboard/components/utils";
+import { DashboardMetricResponse, MetricType } from "@/types/metrics";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 type MetricSummaryProps = {
   metricData: DashboardMetricResponse;
+  metricType: MetricType;
 };
 
-export const MetricSummary = ({ metricData }: MetricSummaryProps) => {
+export const MetricSummary = ({ metricData, metricType }: MetricSummaryProps) => {
   if (!metricData?.metadata?.summary) return null;
 
   const { summary, aggregation } = metricData.metadata || {};
@@ -29,7 +31,11 @@ export const MetricSummary = ({ metricData }: MetricSummaryProps) => {
         </div>
       )}
       <div className="leading-none text-muted-foreground">
-        Average score: {summary?.average?.toFixed(1)}
+        Average {metricType === MetricType.DailyTotalSleep ? "duration" : "score"}: {
+          metricType === MetricType.DailyTotalSleep && summary?.average !== undefined
+            ? formatSecondsToHoursMinutes(summary.average)
+            : summary?.average?.toFixed(1)
+        }
       </div>
     </CardFooter>
   );

@@ -41,6 +41,12 @@ export const Dashboard = () => {
           timeRange={timeRange}
           formatDate={dateFormatter}
         />
+        <MetricCard
+          metricType={MetricType.DailyTotalSleep}
+          title="Daily Sleep"
+          timeRange={timeRange}
+          formatDate={dateFormatter}
+        />
       </div>
     </div>
   );

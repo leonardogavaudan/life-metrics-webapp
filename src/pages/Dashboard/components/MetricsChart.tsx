@@ -4,6 +4,7 @@ import {
   HorizontalCoordinatesGenerator,
   metricConfigs,
 } from "@/pages/Dashboard/components/metricConfigs";
+import { formatSecondsToHoursMinutes } from "@/pages/Dashboard/components/utils";
 import { MetricDataPoint, MetricType } from "@/types/metrics";
 import { format } from "date-fns/format";
 import {
@@ -32,6 +33,10 @@ const chartConfig = {
     label: "Calories",
     color: "hsl(var(--chart-3))",
   },
+  sleep: {
+    label: "Sleep",
+    color: "hsl(var(--chart-4))",
+  },
 } satisfies ChartConfig;
 
 type MetricChartProps = {
@@ -58,12 +63,17 @@ export const MetricChart = ({
       const formattedDate = format(date, "yyyy-MM-dd");
       const value = payload[0].value;
 
+      // Format the value based on the metric type
+      const displayValue = metricType === MetricType.DailyTotalSleep 
+        ? formatSecondsToHoursMinutes(value) 
+        : value;
+
       return (
         <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
           <p className="font-medium">{formattedDate}</p>
           <p className="text-sm">
             <span className="text-muted-foreground">{config.valueLabel}: </span>
-            <span className="font-mono font-medium">{value}</span>
+            <span className="font-mono font-medium">{displayValue}</span>
           </p>
         </div>
       );
@@ -120,6 +130,9 @@ export const MetricChart = ({
             domain={config.yAxisConfig.domain}
             ticks={config.yAxisConfig.ticks}
             tickCount={config.yAxisConfig.tickCount}
+            tickFormatter={metricType === MetricType.DailyTotalSleep 
+              ? (value) => formatSecondsToHoursMinutes(value) 
+              : undefined}
           />
           <Tooltip content={<CustomTooltip />} />
           <Line
