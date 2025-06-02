@@ -36,21 +36,60 @@ const chartConfig = {
     label: "Sleep",
     color: "hsl(var(--chart-4))",
   },
+  rollingAverage: {
+    label: "Rolling Average",
+    color: "#f97316",
+  },
 } satisfies ChartConfig;
 
 type MetricChartProps = {
   data: MetricDataPoint[];
   formatDate: (timestamp: string) => string;
   metricType: MetricType;
+  showRollingAverage?: boolean;
+  rollingAverageWindow?: number;
 };
 
 export const MetricChart = ({
   data,
   formatDate,
   metricType,
+  showRollingAverage = true,
+  rollingAverageWindow = 7,
 }: MetricChartProps) => {
   // Get the configuration for the current metric type
   const config = metricConfigs[metricType];
+
+  // Calculate rolling average
+  const calculateRollingAverage = (data: MetricDataPoint[], window: number) => {
+    return data.map((point, index) => {
+      const start = Math.max(0, index - window + 1);
+      const slice = data.slice(start, index + 1);
+      const validValues = slice
+        .map((p) => p.value)
+        .filter(
+          (value) => value !== 0 && value !== null && value !== undefined
+        );
+
+      const average =
+        validValues.length > 0
+          ? validValues.reduce((sum, val) => sum + val, 0) / validValues.length
+          : null;
+
+      return {
+        ...point,
+        rollingAverage: average,
+      };
+    });
+  };
+
+  // Process data to replace zero values with null and add rolling average
+  const processedData = calculateRollingAverage(data, rollingAverageWindow).map(
+    (point) => ({
+      ...point,
+      value: point.value === 0 ? null : point.value,
+    })
+  );
 
   const CustomTooltip = ({
     active,
@@ -60,10 +99,18 @@ export const MetricChart = ({
     if (active && payload && payload.length) {
       const date = new Date(label);
       const formattedDate = format(date, "yyyy-MM-dd");
-      const value = payload[0].value;
 
-      // Format the value based on the metric type
-      const displayValue =
+      // Find the actual value and rolling average from payload
+      const actualPayload = payload.find((p) => p.dataKey === "value");
+      const rollingPayload = payload.find(
+        (p) => p.dataKey === "rollingAverage"
+      );
+
+      const actualValue = actualPayload?.value;
+      const rollingValue = rollingPayload?.value;
+
+      // Format the values based on the metric type
+      const formatValue = (value: number | null | undefined) =>
         metricType === MetricType.DailyTotalSleep && typeof value === "number"
           ? formatSecondsToHoursMinutes(value)
           : value;
@@ -71,10 +118,28 @@ export const MetricChart = ({
       return (
         <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
           <p className="font-medium">{formattedDate}</p>
-          <p className="text-sm">
-            <span className="text-muted-foreground">{config.valueLabel}: </span>
-            <span className="font-mono font-medium">{displayValue}</span>
-          </p>
+          {actualValue !== null && actualValue !== undefined && (
+            <p className="text-sm">
+              <span className="text-muted-foreground">
+                {config.valueLabel}:{" "}
+              </span>
+              <span className="font-mono font-medium">
+                {formatValue(actualValue)}
+              </span>
+            </p>
+          )}
+          {showRollingAverage &&
+            rollingValue !== null &&
+            rollingValue !== undefined && (
+              <p className="text-sm">
+                <span className="text-muted-foreground">
+                  {rollingAverageWindow}-day avg:{" "}
+                </span>
+                <span className="font-mono font-medium text-orange-600">
+                  {formatValue(rollingValue)}
+                </span>
+              </p>
+            )}
         </div>
       );
     }
@@ -100,7 +165,7 @@ export const MetricChart = ({
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer width="100%">
         <LineChart
-          data={data}
+          data={processedData}
           margin={{
             top: 2,
             left: 10,
@@ -145,6 +210,7 @@ export const MetricChart = ({
             type="monotone"
             stroke={config.colorVar}
             strokeWidth={1.5}
+            connectNulls={false}
             dot={{
               fill: config.colorVar,
               r: 2,
@@ -153,6 +219,18 @@ export const MetricChart = ({
               r: 3,
             }}
           />
+          {showRollingAverage && (
+            <Line
+              dataKey="rollingAverage"
+              type="monotone"
+              stroke="#f97316"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              dot={false}
+              connectNulls={true}
+              name={`${rollingAverageWindow}-day average`}
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
     </ChartContainer>
