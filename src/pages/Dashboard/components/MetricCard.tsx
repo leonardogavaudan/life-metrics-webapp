@@ -5,10 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
 import { useMetricData } from "@/hooks/useMetricData";
 import { MetricChart } from "@/pages/Dashboard/components/MetricsChart";
 import { MetricSummary } from "@/pages/Dashboard/components/MetricsSummary";
