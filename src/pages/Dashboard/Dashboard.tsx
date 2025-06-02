@@ -9,7 +9,7 @@ import {
 import { MetricType, TimeRange } from "@/types/metrics";
 
 export const Dashboard = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>(TimeRange.FourWeek);
+  const [timeRange, setTimeRange] = useState<TimeRange>(TimeRange.ThreeMonth);
   const dateFormatter = formatDate(timeRange);
 
   return (
