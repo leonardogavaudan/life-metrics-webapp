@@ -22,7 +22,7 @@ export const TimeRangeSelector = ({
 }: TimeRangeSelectorProps) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className={className}>
+      <SelectTrigger className={`${className} transition-all duration-200 hover:border-slate-500`}>
         <SelectValue placeholder="Select time range" />
       </SelectTrigger>
       <SelectContent>

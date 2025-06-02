@@ -13,16 +13,21 @@ export const Dashboard = () => {
   const dateFormatter = formatDate(timeRange);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-slate-300 to-slate-500 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-slate-400 text-sm mt-1 font-medium">Track your health metrics over time</p>
+        </div>
         <TimeRangeSelector
           value={timeRange}
           onChange={(value: TimeRange) => setTimeRange(value)}
           options={timeRangeOptions}
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <MetricCard
           metricType={MetricType.DailySleepScore}
           title="Sleep Score"

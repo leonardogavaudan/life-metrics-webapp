@@ -38,7 +38,7 @@ const chartConfig = {
   },
   rollingAverage: {
     label: "Rolling Average",
-    color: "#f97316",
+    color: "#ef4444",
   },
 } satisfies ChartConfig;
 
@@ -116,14 +116,14 @@ export const MetricChart = ({
           : value;
 
       return (
-        <div className="rounded-lg border border-slate-200 bg-white p-2 shadow-md dark:border-slate-800 dark:bg-slate-950">
-          <p className="font-medium">{formattedDate}</p>
+        <div className="rounded-lg border border-slate-700 bg-slate-900 p-3 shadow-xl backdrop-blur-sm">
+          <p className="font-semibold text-white">{formattedDate}</p>
           {actualValue !== null && actualValue !== undefined && (
             <p className="text-sm">
-              <span className="text-muted-foreground">
+              <span className="text-slate-400">
                 {config.valueLabel}:{" "}
               </span>
-              <span className="font-mono font-medium">
+              <span className="font-mono font-semibold text-white">
                 {formatValue(actualValue)}
               </span>
             </p>
@@ -132,10 +132,10 @@ export const MetricChart = ({
             rollingValue !== null &&
             rollingValue !== undefined && (
               <p className="text-sm">
-                <span className="text-muted-foreground">
+                <span className="text-slate-400">
                   {rollingAverageWindow}-day avg:{" "}
                 </span>
-                <span className="font-mono font-medium text-orange-600">
+                <span className="font-mono font-semibold text-red-400">
                   {formatValue(rollingValue)}
                 </span>
               </p>
@@ -178,6 +178,8 @@ export const MetricChart = ({
             strokeDasharray="3 3"
             horizontal={true}
             horizontalCoordinatesGenerator={gridCoordinatesGenerator}
+            stroke="rgb(51, 65, 85)"
+            strokeOpacity={0.3}
           />
           <XAxis
             dataKey="timestamp"
@@ -209,21 +211,25 @@ export const MetricChart = ({
             dataKey="value"
             type="monotone"
             stroke={config.colorVar}
-            strokeWidth={1.5}
+            strokeWidth={2}
             connectNulls={false}
             dot={{
               fill: config.colorVar,
               r: 2,
+              strokeWidth: 0,
             }}
             activeDot={{
-              r: 3,
+              r: 4,
+              stroke: config.colorVar,
+              strokeWidth: 2,
+              fill: "rgb(2, 6, 23)",
             }}
           />
           {showRollingAverage && (
             <Line
               dataKey="rollingAverage"
               type="monotone"
-              stroke="#f97316"
+              stroke="#ef4444"
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
