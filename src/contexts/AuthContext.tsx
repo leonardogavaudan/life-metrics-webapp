@@ -1,21 +1,31 @@
-import { AuthContext } from "@/contexts/auth-context";
+import { createContext } from "react";
+
+export interface AuthContextType {
+  isAuthenticated: boolean;
+  login: (code: string) => Promise<boolean>;
+  logout: () => void;
+  isLoading: boolean;
+}
+
+export const AuthContext = createContext<AuthContextType | null>(null);
 import { api } from "@/lib/axios";
 import axios from "axios"; // Import axios
 import { ReactNode, useEffect, useState } from "react";
 
 async function exchangeGoogleCode(code: string): Promise<string | null> {
-  console.log("exchangeGoogleCode called with code:", code);
   try {
     const response = await api.post("/auth/google/callback", { code });
     return response.data.token;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Code exchange error:",
-        error.response ? error.response.data : error.message
-      );
-    } else {
-      console.error("Code exchange error:", error);
+    if (import.meta.env.DEV) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Code exchange error:",
+          error.response ? error.response.data : error.message
+        );
+      } else {
+        console.error("Code exchange error:", error);
+      }
     }
     return null;
   }
@@ -41,9 +51,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
       return true;
     } else {
-      console.log(
-        "Token is invalid or not present, setting isAuthenticated to false"
-      );
       localStorage.removeItem("auth_token");
       setIsAuthenticated(false);
       setIsLoading(false);
@@ -59,7 +66,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const jwt = await exchangeGoogleCode(googleCode);
       if (!jwt) {
-        console.error("Missing JWT");
+        if (import.meta.env.DEV) {
+          console.error("Missing JWT");
+        }
         logout();
         return false;
       }
@@ -67,19 +76,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("auth_token", jwt);
 
       if (!(await validateStoredToken())) {
-        console.error("Invalid JWT");
+        if (import.meta.env.DEV) {
+          console.error("Invalid JWT");
+        }
         return false;
       }
 
       return true;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(
-          "Login error:",
-          error.response ? error.response.data : error.message
-        );
-      } else {
-        console.error("Login error:", error);
+      if (import.meta.env.DEV) {
+        if (axios.isAxiosError(error)) {
+          console.error(
+            "Login error:",
+            error.response ? error.response.data : error.message
+          );
+        } else {
+          console.error("Login error:", error);
+        }
       }
       logout();
       return false;

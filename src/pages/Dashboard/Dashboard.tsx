@@ -22,7 +22,7 @@ export const Dashboard = () => {
           options={timeRangeOptions}
         />
       </div>
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <MetricCard
           metricType={MetricType.DailySleepScore}
           title="Sleep Score"

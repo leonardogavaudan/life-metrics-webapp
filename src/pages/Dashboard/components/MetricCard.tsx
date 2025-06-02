@@ -28,7 +28,7 @@ export const MetricCard = ({
   title,
   timeRange,
   formatDate,
-  className = "w-1/3",
+  className = "",
 }: MetricCardProps) => {
   const [showRollingAverage, setShowRollingAverage] = useState(true);
   const { data: metricData, isLoading } = useMetricData({

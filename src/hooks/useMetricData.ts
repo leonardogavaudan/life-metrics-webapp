@@ -25,7 +25,9 @@ const fetchMetricData = async ({
 
     return data;
   } catch (error) {
-    console.error("Error fetching metric data:", error);
+    if (import.meta.env.DEV) {
+      console.error("Error fetching metric data:", error);
+    }
     throw error;
   }
 };

@@ -14,6 +14,7 @@ import { OAuthCallback } from "@/pages/OAuthCallback";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PreferencesPage } from "@/pages/Preferences";
 import { Dashboard } from "@/pages/Dashboard/Dashboard";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,9 +52,10 @@ const ProtectedRoutes = () => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Routes>
           <Route element={<Root />}>
             <Route element={<ProtectedRoutes />}>
               <Route element={<ProtectedLayout />}>
@@ -73,9 +75,10 @@ const App = () => {
             <Route path="/terms-of-service" element={<TermsOfService />} />
           </Route>
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
-    </QueryClientProvider>
+          </Routes>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 
